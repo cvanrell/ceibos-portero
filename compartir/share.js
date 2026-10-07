@@ -110,7 +110,6 @@ function downloadPng() {
 // gesture and the popup would be blocked, so the user taps "Abrir WhatsApp" instead.
 function fallbackShare() {
   downloadPng();
-  $('download-hint').hidden = true;
   $('fallback').hidden = false;
   $('fallback').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
@@ -164,10 +163,6 @@ async function main() {
   $('pass').hidden = false;
 
   $('share').addEventListener('click', share);
-  $('download').addEventListener('click', () => {
-    downloadPng();
-    $('download-hint').hidden = false;
-  });
 }
 
 // Only the fragment changes when a new code is opened in the same tab; start over.

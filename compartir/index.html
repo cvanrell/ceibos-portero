@@ -34,8 +34,7 @@
       font: 18px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     }
     main { max-width: 480px; margin: 0 auto; padding: 20px 16px 32px; }
-    h1 { font-size: 1.35rem; margin: 0 0 4px; }
-    .when { margin: 0 0 16px; font-weight: 600; }
+    .when { margin: 0 0 16px; font-size: 1.25rem; font-weight: 600; }
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; }
     .card img { display: block; width: 100%; height: auto; }
     .notice { border-radius: 10px; padding: 10px 14px; margin: 14px 0 0; }
@@ -49,14 +48,12 @@
       text-align: center; text-decoration: none; cursor: pointer;
     }
     .primary { background: var(--accent); color: #fff; }
-    .secondary { background: #e3ebe1; color: var(--fg); }
     a { color: var(--accent); font-weight: 600; }
     [hidden] { display: none !important; }
   </style>
 </head>
 <body>
   <main>
-    <h1>Pase de fin de semana — Ceibos</h1>
     <p class="when" id="when"></p>
 
     <div class="notice error" id="error" hidden></div>
@@ -68,15 +65,11 @@
       <div class="card"><img id="pass-image" alt="Código QR del pase de fin de semana"></div>
 
       <button class="primary" id="share" type="button">Compartir por WhatsApp</button>
-      <button class="secondary" id="download" type="button">Descargar imagen</button>
 
       <div class="notice info" id="fallback" hidden>
         <p>Este celular no permite compartir la imagen directamente, así que se descargó.</p>
         <p>Abrí WhatsApp y adjuntá la imagen descargada. Si no se descargó, mantené presionado el QR y elegí <em>Compartir</em> o <em>Guardar</em>.</p>
         <a class="button primary" id="wa-link" target="_blank" rel="noopener">Abrir WhatsApp</a>
-      </div>
-      <div class="notice info" id="download-hint" hidden>
-        <p>Si no se descargó, mantené presionado el QR y elegí <em>Guardar</em>.</p>
       </div>
     </div>
   </main>
