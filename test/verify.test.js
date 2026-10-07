@@ -44,8 +44,9 @@ test('a malformed public key throws (configuration error, not a scan verdict)', 
   assert.equal(decodePublicKey(key).length, 32);
 });
 
-test('config.js still ships the placeholder, not the test key', () => {
-  assert.equal(PUBLIC_KEY, PLACEHOLDER_PUBLIC_KEY);
+test('config.js ships a real 43-char key, never the placeholder or the test key', () => {
+  assert.match(PUBLIC_KEY, /^[A-Za-z0-9_-]{43}$/);
+  assert.notEqual(PUBLIC_KEY, PLACEHOLDER_PUBLIC_KEY);
   assert.notEqual(PUBLIC_KEY, vectors.testPublicKey);
 });
 
