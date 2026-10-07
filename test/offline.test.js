@@ -47,8 +47,35 @@ test('no runtime file loads anything from another origin', () => {
   }
 });
 
-test('the service worker only serves the scanner page from cache, not other pages like pase/', () => {
-  assert.match(sw, /request\.mode === 'navigate' && !isScannerPage\(/);
+test('the service worker only handles the scanner page and its own files', () => {
+  // Run sw.js with a minimal worker global and record which fetches it answers.
+  const scope = 'https://example.github.io/ceibos-portero/';
+  const listeners = {};
+  const self = {
+    location: new URL(`${scope}sw.js`),
+    registration: { scope },
+    addEventListener: (type, fn) => { listeners[type] = fn; },
+  };
+  // Cache calls never settle: this test is about routing, not caching.
+  const pending = () => new Promise(() => {});
+  new Function('self', 'caches', 'fetch', sw)(self, { open: pending, keys: pending }, pending);
+  const handled = (path, mode = 'no-cors') => {
+    let answered = false;
+    listeners.fetch({ request: { method: 'GET', url: scope + path, mode }, respondWith: () => { answered = true; } });
+    return answered;
+  };
+
+  assert.ok(handled('', 'navigate'));
+  assert.ok(handled('index.html', 'navigate'));
+  assert.ok(handled('?v=1', 'navigate'));
+  assert.ok(handled('app.js'));
+  assert.ok(handled('verify.js'));
+  assert.ok(handled('vendor/jsqr/jsQR.js'));
+  assert.ok(!handled('pase/', 'navigate'));
+  assert.ok(!handled('compartir/', 'navigate'));
+  assert.ok(!handled('compartir/share.js'), 'share page scripts must not be cached by the scanner');
+  assert.ok(!handled('compartir/vendor/qrcode-generator/qrcode.js'));
+
   assert.ok(existsSync(join(root, 'pase', 'index.html')));
-  assert.ok(!assets.some(asset => asset.startsWith('./pase')), 'pase/ must not be precached');
+  assert.ok(!assets.some(asset => /^\.\/(pase|compartir)\//.test(asset)), 'online-only pages must not be precached');
 });

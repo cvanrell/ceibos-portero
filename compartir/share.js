@@ -158,6 +158,11 @@ function share() {
 }
 
 async function main() {
+  // Inside a frame (e.g. Google's) the share sheet and clipboard are blocked: the button
+  // reopens this page as its own tab instead.
+  if (window.top !== window.self) {
+    $('share').addEventListener('click', () => window.open(location.href, '_blank', 'noopener'));
+  }
   const code = decodeURIComponent(location.hash.slice(1));
   if (!code) {
     showError('Este enlace no trae ningún pase. Abrilo desde el generador del pase de fin de semana.');
@@ -189,7 +194,9 @@ async function main() {
   $('pass-image').src = pngUrl;
   $('pass').hidden = false;
 
-  if (isPhone()) {
+  if (window.top !== window.self) {
+    // Handled at the top of main().
+  } else if (isPhone()) {
     $('share').addEventListener('click', share);
   } else {
     $('share').textContent = 'Compartir por WhatsApp Web';
