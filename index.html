@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es-UY">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Portón Ceibos">
+  <title>Portón Ceibos</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main>
+    <!-- Shown while app.js loads; replaced by the matching screen. -->
+    <section id="screen-loading" class="screen panel">
+      <p class="lead">Cargando…</p>
+      <noscript><p class="lead">Esta página necesita JavaScript activado.</p></noscript>
+    </section>
+
+    <!-- PUBLIC_KEY in config.js is missing or wrong. -->
+    <section id="screen-config" class="screen panel" hidden>
+      <div class="badge badge-error">Error de configuración</div>
+      <h1>El escáner no está configurado</h1>
+      <p class="lead">Falta la clave pública del generador de QR, así que no se puede verificar ningún código.</p>
+      <p>Avisale a quien administra el sistema: hay que copiar la clave pública que muestra la página del generador
+        en el archivo <code>config.js</code> del escáner.</p>
+      <p class="detail" id="config-detail"></p>
+    </section>
+
+    <!-- Before the camera is on: explain and ask politely. -->
+    <section id="screen-start" class="screen panel" hidden>
+      <h1>Portón Ceibos</h1>
+      <p class="lead">Para revisar los QR de los autos vamos a usar la cámara trasera del celular.</p>
+      <p>Cuando el navegador te pregunte, elegí <strong>Permitir</strong>. La cámara solo se usa para leer el QR;
+        no se guarda ni se envía ninguna imagen.</p>
+      <button id="start-button" class="big-button" type="button">Escanear</button>
+    </section>
+
+    <!-- Camera unavailable (permission denied, no camera, insecure page...). -->
+    <section id="screen-camera-error" class="screen panel" hidden>
+      <div class="badge badge-error">Sin cámara</div>
+      <h1 id="camera-error-title">No pudimos usar la cámara</h1>
+      <div id="camera-error-body"></div>
+      <button id="retry-button" class="big-button" type="button">Reintentar</button>
+    </section>
+
+    <!-- Live camera. -->
+    <section id="screen-scan" class="screen scan" hidden>
+      <video id="video" playsinline muted autoplay></video>
+      <div class="viewfinder" aria-hidden="true"></div>
+      <p class="scan-hint">Apuntá al QR en la pantalla del celular</p>
+    </section>
+
+    <!-- Full-screen verdict. Tap to go back to scanning. -->
+    <section id="screen-result" class="screen result" hidden role="alert" aria-live="assertive">
+      <div class="result-word" id="result-word"></div>
+      <div class="result-detail" id="result-detail"></div>
+      <div class="result-hint">Tocá para seguir escaneando</div>
+    </section>
+  </main>
+
+  <footer>
+    <span id="clock" class="clock">—</span>
+    <span id="offline-status" class="offline-status"></span>
+  </footer>
+</body>
+</html>

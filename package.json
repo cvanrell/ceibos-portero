@@ -1,0 +1,18 @@
+{
+  "name": "ceibos-weekend-pass-scanner",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Offline gatekeeper scanner for the Ceibos weekend pass (static PWA, no build step).",
+  "type": "module",
+  "scripts": {
+    "test": "node --import ./test/setup.js --test 'test/*.test.js'",
+    "vendor": "node tools/vendor.mjs",
+    "icons": "node tools/make-icons.mjs"
+  },
+  "devDependencies": {
+    "jsqr": "1.4.0",
+    "pngjs": "^7.0.0",
+    "qrcode": "^1.5.4",
+    "tweetnacl": "1.0.3"
+  }
+}
