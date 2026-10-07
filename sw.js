@@ -6,7 +6,7 @@
 // (e.g. the real PUBLIC_KEY in config.js) shows up on the following visit.
 // Bump CACHE_VERSION whenever the file list changes or to force a clean re-download.
 
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const CACHE_NAME = `ceibos-scanner-${CACHE_VERSION}`;
 
 const ASSETS = [
@@ -46,10 +46,14 @@ self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
 
+  // Only the scanner page itself is served from the cache. Other pages under the same
+  // path (e.g. the pase/ short link) must go to the network, not get the scanner.
+  if (request.mode === 'navigate' && !isScannerPage(new URL(request.url))) return;
+
   event.respondWith(
     (async () => {
       const cache = await caches.open(CACHE_NAME);
-      // Navigations (any URL in scope, with or without a query) get the app shell.
+      // Scanner navigations (with or without a query) get the app shell.
       const key = request.mode === 'navigate' ? './index.html' : request;
       const cached = await cache.match(key, { ignoreSearch: true });
 
@@ -68,3 +72,8 @@ self.addEventListener('fetch', event => {
     })(),
   );
 });
+
+function isScannerPage(url) {
+  const scope = new URL(self.registration.scope);
+  return url.pathname === scope.pathname || url.pathname === `${scope.pathname}index.html`;
+}
