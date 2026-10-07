@@ -8,6 +8,8 @@ const files = [
   ['node_modules/tweetnacl/LICENSE', 'vendor/tweetnacl/LICENSE'],
   ['node_modules/jsqr/dist/jsQR.js', 'vendor/jsqr/jsQR.js'],
   ['node_modules/jsqr/LICENSE', 'vendor/jsqr/LICENSE'],
+  // Share page only (online), not precached by the service worker. MIT; no LICENSE file in the package.
+  ['node_modules/qrcode-generator/qrcode.js', 'compartir/vendor/qrcode-generator/qrcode.js'],
 ];
 
 for (const [from, to] of files) {
