@@ -16,7 +16,6 @@ const WHATSAPP_WEB_URL = 'https://web.whatsapp.com/';
 
 let pngFile = null;
 let pngUrl = null;
-let waText = '';
 
 function splitYmd(text) {
   const [year, month, day] = text.split('-').map(Number);
@@ -108,8 +107,6 @@ function downloadPng() {
   a.remove();
 }
 
-// No window.open here: after an async share failure the tap no longer counts as a user
-// gesture and the popup would be blocked, so the user taps "Abrir WhatsApp" instead.
 function fallbackShare() {
   downloadPng();
   $('fallback').hidden = false;
@@ -146,9 +143,10 @@ function shareOnDesktop() {
   );
 }
 
+// Only the image, no text: some apps (WhatsApp on iPhone in particular) drop the image or
+// fail when a share carries both. The image already has the dates written on it.
 function share() {
-  const withText = { files: [pngFile], text: waText };
-  const data = canShare(withText) ? withText : { files: [pngFile] };
+  const data = { files: [pngFile] };
   if (!navigator.share || !canShare(data)) {
     fallbackShare();
     return;
@@ -182,9 +180,6 @@ async function main() {
     $('expired').hidden = false;
     return;
   }
-
-  waText = `Pase de Ceibos para entrar con el auto, ${shortLabel}. Mostrá el QR de la imagen en el portón.`;
-  $('wa-link').href = `https://wa.me/?text=${encodeURIComponent(waText)}`;
 
   // Built before any tap, so the share call runs inside the user gesture.
   const canvas = drawCard(code, shortLabel);
