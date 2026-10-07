@@ -12,6 +12,8 @@ const QUIET_ZONE_MODULES = 4;
 const MONTHS = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
   'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
 
+const WHATSAPP_WEB_URL = 'https://web.whatsapp.com/';
+
 let pngFile = null;
 let pngUrl = null;
 let waText = '';
@@ -114,6 +116,36 @@ function fallbackShare() {
   $('fallback').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+/** Phones share the image through the share sheet; computers go through WhatsApp Web. */
+function isPhone() {
+  if (navigator.userAgentData) return navigator.userAgentData.mobile;
+  const ua = navigator.userAgent;
+  // iPadOS reports itself as a Mac; touch points give it away.
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+}
+
+function showDesktopHint(copied) {
+  $('desktop-copied').hidden = !copied;
+  $('desktop-downloaded').hidden = copied;
+  $('desktop-paste').hidden = !copied;
+  $('desktop-attach').hidden = copied;
+  $('desktop-hint').hidden = false;
+}
+
+// WhatsApp Web can't receive an image through a link, so the image goes to the clipboard
+// (or is downloaded) and the user pastes it into the chat. The named target reuses an
+// already open WhatsApp Web tab. The hint's own link covers a blocked popup.
+function shareOnDesktop() {
+  const open = () => window.open(WHATSAPP_WEB_URL, 'whatsapp-web');
+  const copy = navigator.clipboard && window.ClipboardItem
+    ? navigator.clipboard.write([new ClipboardItem({ 'image/png': pngFile })])
+    : Promise.reject(new Error('no image clipboard'));
+  copy.then(
+    () => { showDesktopHint(true); open(); },
+    () => { downloadPng(); showDesktopHint(false); open(); },
+  );
+}
+
 function share() {
   const withText = { files: [pngFile], text: waText };
   const data = canShare(withText) ? withText : { files: [pngFile] };
@@ -162,7 +194,13 @@ async function main() {
   $('pass-image').src = pngUrl;
   $('pass').hidden = false;
 
-  $('share').addEventListener('click', share);
+  if (isPhone()) {
+    $('share').addEventListener('click', share);
+  } else {
+    $('share').textContent = 'Compartir por WhatsApp Web';
+    if (/Mac/.test(navigator.platform || navigator.userAgent)) $('paste-keys').textContent = '⌘V';
+    $('share').addEventListener('click', shareOnDesktop);
+  }
 }
 
 // Only the fragment changes when a new code is opened in the same tab; start over.

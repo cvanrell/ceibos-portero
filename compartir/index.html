@@ -49,6 +49,7 @@
     }
     .primary { background: var(--accent); color: #fff; }
     a { color: var(--accent); font-weight: 600; }
+    kbd { font: inherit; font-weight: 700; }
     [hidden] { display: none !important; }
   </style>
 </head>
@@ -70,6 +71,12 @@
         <p>Este celular no permite compartir la imagen directamente, así que se descargó.</p>
         <p>Abrí WhatsApp y adjuntá la imagen descargada. Si no se descargó, mantené presionado el QR y elegí <em>Compartir</em> o <em>Guardar</em>.</p>
         <a class="button primary" id="wa-link" target="_blank" rel="noopener">Abrir WhatsApp</a>
+      </div>
+      <div class="notice info" id="desktop-hint" hidden>
+        <p id="desktop-copied">La imagen del pase quedó copiada.</p>
+        <p id="desktop-downloaded" hidden>La imagen del pase se descargó.</p>
+        <p>En WhatsApp Web abrí el chat o grupo, <span id="desktop-paste">pegala con <kbd id="paste-keys">Ctrl+V</kbd></span><span id="desktop-attach" hidden>adjuntala</span> y enviala. Para mandarla a más chats, usá <em>Reenviar</em> y elegí varios.</p>
+        <a class="button primary" href="https://web.whatsapp.com/" target="whatsapp-web" rel="noopener">Abrir WhatsApp Web</a>
       </div>
     </div>
   </main>
