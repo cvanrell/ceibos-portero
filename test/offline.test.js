@@ -14,8 +14,8 @@ const assets = JSON.parse(
 
 const NOT_SERVED = new Set(['sw.js', 'package.json', 'package-lock.json']);
 const NOT_SERVED_DIRS = new Set(['node_modules', 'test', 'tools']);
-// Served, but deliberately online-only: the generator short link and its share page.
-const ONLINE_ONLY_DIRS = new Set(['pase', 'compartir']);
+// Served, but deliberately online-only: the generator short link.
+const ONLINE_ONLY_DIRS = new Set(['pase']);
 
 function runtimeFiles(dir) {
   return readdirSync(dir).flatMap(name => {
@@ -72,10 +72,8 @@ test('the service worker only handles the scanner page and its own files', () =>
   assert.ok(handled('verify.js'));
   assert.ok(handled('vendor/jsqr/jsQR.js'));
   assert.ok(!handled('pase/', 'navigate'));
-  assert.ok(!handled('compartir/', 'navigate'));
-  assert.ok(!handled('compartir/share.js'), 'share page scripts must not be cached by the scanner');
-  assert.ok(!handled('compartir/vendor/qrcode-generator/qrcode.js'));
+  assert.ok(!handled('pase/index.html'));
 
   assert.ok(existsSync(join(root, 'pase', 'index.html')));
-  assert.ok(!assets.some(asset => /^\.\/(pase|compartir)\//.test(asset)), 'online-only pages must not be precached');
+  assert.ok(!assets.some(asset => /^\.\/pase\//.test(asset)), 'online-only pages must not be precached');
 });

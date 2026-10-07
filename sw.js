@@ -47,8 +47,7 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
 
   // Only the scanner page and its own precached files are handled. Other pages under the
-  // same path (pase/, compartir/) and their files go straight to the network: caching
-  // them here served stale scripts next to fresh pages.
+  // same path (e.g. the pase/ short link) and their files go straight to the network.
   const url = new URL(request.url);
   if (request.mode === 'navigate' ? !isScannerPage(url) : !isScannerAsset(url)) return;
 
