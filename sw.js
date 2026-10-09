@@ -6,7 +6,7 @@
 // (e.g. the real PUBLIC_KEY in config.js) shows up on the following visit.
 // Bump CACHE_VERSION whenever the file list changes or to force a clean re-download.
 
-const CACHE_VERSION = 'v3';
+const CACHE_VERSION = 'v4';
 const CACHE_NAME = `ceibos-scanner-${CACHE_VERSION}`;
 
 const ASSETS = [
@@ -17,9 +17,11 @@ const ASSETS = [
   './verify.js',
   './config.js',
   './manifest.webmanifest',
-  './icons/icon.svg',
   './icons/icon-192.png',
   './icons/icon-512.png',
+  './icons/icon-maskable-512.png',
+  './icons/apple-touch-icon.png',
+  './icons/logo.png',
   './vendor/tweetnacl/nacl-fast.js',
   './vendor/jsqr/jsQR.js',
 ];
