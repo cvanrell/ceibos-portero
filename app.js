@@ -272,20 +272,27 @@ function backToScanning() {
 
 // ---------- verdict ----------
 
-const WEEKDAYS = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+const WEEKDAYS_LONG = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
 
-/** `2026-10-09` -> `vie 09/10` */
-function shortDay(iso) {
+/** `2026-10-09` -> `viernes 09/10` */
+function longDay(iso) {
   const [y, m, d] = iso.split('-').map(Number);
-  const weekday = WEEKDAYS[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+  const weekday = WEEKDAYS_LONG[new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
   return `${weekday} ${String(d).padStart(2, '0')}/${String(m).padStart(2, '0')}`;
 }
 
+// Icons drawn with currentColor (static markup only).
+const ICON = {
+  check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  cross: '<svg viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/></svg>',
+  clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+};
+
 const VERDICT_UI = {
-  VALID: { word: 'VÁLIDO', detail: (f, t) => `hasta el ${shortDay(t)}` },
-  NOT_YET: { word: 'TODAVÍA NO VÁLIDO', detail: (f, t) => `vale del ${shortDay(f)} al ${shortDay(t)}` },
-  EXPIRED: { word: 'VENCIDO', detail: (f, t) => `era del ${shortDay(f)} al ${shortDay(t)}` },
-  INVALID: { word: 'QR INVÁLIDO', detail: () => 'no es un pase válido de Ceibos' },
+  VALID: { icon: ICON.check, word: 'Acceso autorizado', detail: (f, t) => `Pase vigente hasta el ${longDay(t)}` },
+  NOT_YET: { icon: ICON.clock, word: 'Pase aún no vigente', detail: (f, t) => `Vigente del ${longDay(f)} al ${longDay(t)}` },
+  EXPIRED: { icon: ICON.cross, word: 'Pase vencido', detail: (f, t) => `Tuvo vigencia del ${longDay(f)} al ${longDay(t)}` },
+  INVALID: { icon: ICON.cross, word: 'Código no válido', detail: () => 'El código no corresponde a un pase del Campo Deportivo Los Ceibos' },
 };
 
 function showResult(text) {
@@ -295,6 +302,7 @@ function showResult(text) {
 
   const screen = $('screen-result');
   screen.className = `screen result verdict-${verdict}`;
+  $('result-icon').innerHTML = ui.icon; // static strings only
   $('result-word').textContent = ui.word;
   $('result-detail').textContent = ui.detail(from, to);
   state = 'result';

@@ -63,9 +63,16 @@
 
     <!-- Full-screen verdict. Tap to go back to scanning. -->
     <section id="screen-result" class="screen result" hidden role="alert" aria-live="assertive">
-      <div class="result-word" id="result-word"></div>
-      <div class="result-detail" id="result-detail"></div>
-      <div class="result-hint">Tocá para seguir escaneando</div>
+      <div class="result-frame">
+        <div class="result-brand">
+          <img src="icons/logo.png" alt="" width="44" height="41">
+          <span>Campo Deportivo Los Ceibos</span>
+        </div>
+        <div class="result-icon" id="result-icon" aria-hidden="true"></div>
+        <div class="result-word" id="result-word"></div>
+        <div class="result-detail" id="result-detail"></div>
+      </div>
+      <div class="result-hint">Toque la pantalla para continuar</div>
     </section>
   </main>
 
